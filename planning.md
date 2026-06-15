@@ -4,6 +4,7 @@
 App:
 The main purpose of the App component is to manage all other components of the website, which includes the header and search bar, the randomly chosen featured movie displayed, the list of movies that make up the main body of the page, the modal behavior, the sort functionality, and the footer. The app component manages all the aforementioned states necessary to render the main elements of the website dynamically. The App component should handle all API call behavior. 
 
+
 Specifically, it should maintain:
 A list of movie objects movies[]
 A selected movie id selectedMovieId that is used to identify the movie used for the modal display. When null, no modal is open — so a separate "isModalOpen" boolean is not needed.
@@ -12,6 +13,7 @@ A search query searchQuery that is saved when the user hits enter
 A sort option sortMode that determines how movies should be displayed
 Props received: none (top-level component).
 Parent-child: parent of Header, FeaturedMovie, MovieList, MovieModal, Footer. Passes state and handler callbacks down as props.
+page — a number for pagination. Starts at 1. Goes up on "load more", resets to 1 on a new search. Should be controlled by App component
 
 Header:
 Main purpose is to display branding information and have a "now playing"
@@ -108,7 +110,7 @@ App owns all the shared state. SearchBar keeps its own typing state. Each line b
 
 movies — an array of movie objects. Starts empty []. Updated when the Now Playing or Search fetch comes back.
 searchQuery — a string for the submitted search. Starts as "". Updated when the user submits the search bar, cleared by the clear button.
-page — a number for pagination. Starts at 1. Goes up on "load more", resets to 1 on a new search.
+page — a number for pagination. Starts at 1. Goes up on "load more", resets to 1 on a new search. Should be controlled by App component
 selectedMovieId — the id of the movie the modal is showing, or null. Starts null. Set when a card is clicked, set back to null when the modal closes.
 movieDetails — the full details object for the modal, or null. Starts null. Updated when the Movie Details fetch comes back.
 featuredMovie — the randomly chosen movie at the top, or null. Starts null. Set once after the first movie list loads.
@@ -144,3 +146,30 @@ I would use, and jotted down everything in the planning document. Used lovable t
 3) Wrote MovieCard and defined variables needed based on the mockup
 
 4) Wrote MovieList component to take movie data and render all the MovieCards needed. Implement CSS styling using flex-grid + flex-box combination to have a grid of 6 movie cards max per row.
+
+5) When implementing "load more" button, I was prompted to make two design choices:
+
+    1) When the user hits the "load more" button and it fails, it should not remove the movie cards already there.
+
+    2) The button should probably hide when when no more pages are present.
+
+A "page" variable keeps track of what page of results you are asking TMDb for (starts at 1 because you
+want page 1 returned). Eventually we want to know when to stop showing the "show more" button (for user sake) so
+we keep track of a totalPages variable as well.
+
+To change the variables, we have a setPage and setTotal page accompanying function. 
+
+"handleLoadMore" updates the page count (page = page + 1)
+
+the useEffect function has a call to fetchNowPlaying (which originally just got the first page of results) and now basically says that if "page" changes, this function should run again.
+
+because the fetch request only gets 20 pages at a time, we need a way to still have the older pages there after 
+you make a call to load more pages. 
+
+the "setMovieData" basically says: if the page is 1, replace the entire list, else append the data results 
+to the current list of movies ([...prev,...results] does this)
+
+lastly we make sure to save the total number of pages that TMDb has in the variable so that
+we can hide the loadmore button if the page count is exceeded.
+
+There is a disabled state, that based on if disabled or not, displays different text and allows/does not allow user to click the button.
