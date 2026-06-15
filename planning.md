@@ -132,3 +132,15 @@ When a card is clicked, the function (onClick in APP) should pass back up the mo
 **AI Feature Spec**:
 
 The AI description should appear somewhere in the modal. The AI should return a 2-3 sentence description of the movie based on title, genre, overview, popularity (given by like count). There should be a loading status/flag show the modal can show a spinner, and an error string that should be printed. It is probably smarter if this API call lives in the App component so that the same API does not have to be called if its the same movie that is clicked on.
+
+
+**IMPLEMENTATION DECISIONS**
+
+1) Started by scoping out what the project should look like, what features were required, what components I would need to make and the how my code would have those components organized, what API endpoints 
+I would use, and jotted down everything in the planning document. Used lovable to help me scaffold a project that looked like how I wanted it to for reference. 
+
+2) Wrote API fetch function and tested it out in console to understand the structure of the data and how I would use that structure to help build any necessary components.
+
+3) Wrote MovieCard and defined variables needed based on the mockup
+
+4) Wrote MovieList component to take movie data and render all the MovieCards needed. Implement CSS styling using flex-grid + flex-box combination to have a grid of 6 movie cards max per row.
