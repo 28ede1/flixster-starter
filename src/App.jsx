@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import Header from './Header'
 import MovieList from './MovieList'
+import Library from './Library'
 
 const App = () => {
   const [movies, setMovieData] = useState([]); //we need a way to remember data between renders so we use useState
@@ -11,6 +12,10 @@ const App = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  // likes/watched are sets of movie ids, owned by App so the Library can filter on them
+  const [likes, setLikes] = useState(() => new Set());
+  const [watched, setWatched] = useState(() => new Set());
+  const [view, setView] = useState("all"); // "all" | "favorited" | "watched"
 
   async function fetchNowPlaying(pageToFetch) {
     setIsLoading(true);
@@ -70,6 +75,23 @@ const App = () => {
     }
   }, [page, searchQuery])
 
+  // toggle an id within a Set-valued state (used by both likes and watched)
+  const toggleInSet = (setter) => (id) =>
+    setter((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  const handleToggleLike = toggleInSet(setLikes);
+  const handleToggleWatched = toggleInSet(setWatched);
+
+  // Library filter: "all" shows everything, the others narrow to liked/watched ids
+  const visibleMovies = movies.filter((movie) => {
+    if (view === "favorited") return likes.has(movie.id);
+    if (view === "watched") return watched.has(movie.id);
+    return true;
+  });
+
   const handleLoadMore = () => setPage((prev) => prev + 1);
   // both reset page to 1 so a mode switch starts a fresh list (page 1 replaces)
   const handleSearch = (query) => { setSearchQuery(query); setPage(1); };
@@ -78,8 +100,22 @@ const App = () => {
   return (
     <div className="App">
       <Header onSearch={handleSearch} onNowPlaying={handleNowPlaying} />
-      <MovieList movies={movies} />
+      <Library view={view} onViewChange={setView} />
+      {view === "favorited" && visibleMovies.length === 0 ? (
+        <p className="empty-view">No favorites yet. Tap the heart on any poster to add one</p>
+      ) : view === "watched" && visibleMovies.length === 0 ? (
+        <p className="empty-view">No watched titles yet. Mark something as watched to see it here</p>
+      ) : (
+        <MovieList
+          movies={visibleMovies}
+          likes={likes}
+          watched={watched}
+          onToggleLike={handleToggleLike}
+          onToggleWatched={handleToggleWatched}
+        />
+      )}
       {error && <p className="error">{error}</p>}
+      
       {page < totalPages && (
         <button
           className="load-more"
@@ -89,6 +125,7 @@ const App = () => {
           {isLoading ? "Loading…" : "Load More"}
         </button>
       )}
+
     </div>
   )
 }

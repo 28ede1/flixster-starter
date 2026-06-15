@@ -1,6 +1,4 @@
-import { useState } from "react";
-
-const MovieCard = ({movie_info, movie_number}) => {
+const MovieCard = ({movie_info, movie_number, liked, watched, onToggleLike, onToggleWatched}) => {
     const posterUrl = movie_info.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie_info.poster_path}`
     : null;
@@ -14,11 +12,8 @@ const MovieCard = ({movie_info, movie_number}) => {
     ? new Date(movie_info.release_date).getFullYear()
     : "Unknown";
 
-    // track whether the user has liked and/or watched this movie
-    // (will do more with this later, e.g. filtering/persisting)
-    const [liked, setLiked] = useState(false);
-    const [watched, setWatched] = useState(false);
-
+    // liked/watched are owned by App (so the Library can filter on them);
+    // this card just reports clicks back up via the toggle callbacks
     const numberTag = String(movie_number).padStart(3, "0");
     return (
         <div className="MovieCard">
@@ -31,14 +26,14 @@ const MovieCard = ({movie_info, movie_number}) => {
                 <button
                     className={liked ? "liked active" : "liked"}
                     aria-pressed={liked}
-                    onClick={() => setLiked((prev) => !prev)}
+                    onClick={() => onToggleLike(movie_info.id)}
                 >
                     {liked ? "❤️ Liked" : "🤍 Like"}
                 </button>
                 <button
                     className={watched ? "watched active" : "watched"}
                     aria-pressed={watched}
-                    onClick={() => setWatched((prev) => !prev)}
+                    onClick={() => onToggleWatched(movie_info.id)}
                 >
                     {watched ? "✅ Watched" : "👁️ Watched?"}
                 </button>

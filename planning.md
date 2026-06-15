@@ -74,6 +74,9 @@ Props received: current sortMode; onSortChange(mode) callback.
 State: none — sortMode is owned by App, which re-sorts movies[] before passing to MovieList.
 Parent-child: child of App (rendered near/above MovieList).
 
+Library: 
+This component should be a small section of the screen that has a button to collapse it. It should have 3 options that allow the user to either 1) view all titles, 2) view favorited, 3) view watched movies. 
+
 **TMDb endpoints**:
 URL, required params, response fields components will use and error cases to handles
 
@@ -177,3 +180,5 @@ There is a disabled state, that based on if disabled or not, displays different 
 6) Implement basic header information (including the SearchBar component)
 
 7) Implement search functionality, using similar design pattern to handling fetch requests for "Now Playing"
+
+8) Implement sorting options for liked/unliked and watched/unwatched

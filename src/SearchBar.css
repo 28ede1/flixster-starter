@@ -1,0 +1,29 @@
+.search-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid #ccc;
+    border-radius: 999px;
+    padding: 0.3rem 0.6rem;
+}
+
+.search-icon {
+    width: 16px;
+    height: 16px;
+    flex: none;
+    color: #555;
+}
+
+.search-input {
+    border: none;
+    outline: none;
+    font-size: 0.9rem;
+}
+
+.search-clear {
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #888;
+    line-height: 1;
+}

@@ -1,4 +1,5 @@
 import SearchBar from "./SearchBar"
+import './Header.css'
 
 const Header = ({ onSearch, onNowPlaying }) => {
     return (
