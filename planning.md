@@ -175,3 +175,5 @@ we can hide the loadmore button if the page count is exceeded.
 There is a disabled state, that based on if disabled or not, displays different text and allows/does not allow user to click the button.
 
 6) Implement basic header information (including the SearchBar component)
+
+7) Implement search functionality, using similar design pattern to handling fetch requests for "Now Playing"
