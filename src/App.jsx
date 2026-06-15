@@ -6,6 +6,7 @@ import Footer from './Footer'
 import Hero from './Hero'
 import MovieList from './MovieList'
 import Library from './Library'
+import SortControl from './SortControl'
 
 const App = () => {
   const [movies, setMovieData] = useState([]); //we need a way to remember data between renders so we use useState
@@ -19,6 +20,7 @@ const App = () => {
   const [watched, setWatched] = useState(() => new Set());
   const [view, setView] = useState("all"); // "all" | "favorited" | "watched"
   const [heroMovie, setHeroMovie] = useState(null); // random featured movie, locked once chosen
+  const [sortBy, setSortBy] = useState(null); // null | "az" | "newest" | "rating"
 
   async function fetchNowPlaying(pageToFetch) {
     setIsLoading(true);
@@ -96,10 +98,18 @@ const App = () => {
   const handleToggleWatched = toggleInSet(setWatched);
 
   // Library filter: "all" shows everything, the others narrow to liked/watched ids
-  const visibleMovies = movies.filter((movie) => {
+  const filteredMovies = movies.filter((movie) => {
     if (view === "favorited") return likes.has(movie.id);
     if (view === "watched") return watched.has(movie.id);
     return true;
+  });
+
+  // apply the active sort (copy first so we don't mutate state); null keeps API order
+  const visibleMovies = [...filteredMovies].sort((a, b) => {
+    if (sortBy === "az") return (a.title ?? "").localeCompare(b.title ?? "");
+    if (sortBy === "newest") return (b.release_date ?? "").localeCompare(a.release_date ?? "");
+    if (sortBy === "rating") return (b.vote_average ?? 0) - (a.vote_average ?? 0);
+    return 0;
   });
 
   const handleLoadMore = () => setPage((prev) => prev + 1);
@@ -117,6 +127,8 @@ const App = () => {
         <Library className="leftMain" view={view} onViewChange={setView} />
         
         <section className="rightMain">
+          <SortControl sortBy={sortBy} onSortChange={setSortBy} />
+
           {view === "favorited" && visibleMovies.length === 0 ? (
             <p className="empty-view">No favorites yet. Tap the heart on any poster to add one</p>
           ) : view === "watched" && visibleMovies.length === 0 ? (

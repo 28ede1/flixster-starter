@@ -52,6 +52,9 @@ Props received: movie_info (the movie object: title, vote_average, id, poster_pa
 State: none — liked/watched are lifted to App (tracked there as Sets of ids); hover is handled in CSS.
 Parent-child: child of MovieList.
 
+The text elements on the card should not be above the card. They should be present ontop of the card (with Apple-TV styling) when
+you hover over the image. The title and year can be below be displayed below. The rating should always be present in bottom right corner of the image with apple glass styling. Like and "Add to Watched" with just hte icon should show up in the top right as circle icons with Apple-TV glass style when hovered. There should be some visual indicated to show that something was favorited/watched when opened.
+
 
 MovieModal:
 Shows the full details of a single selected movie in an overlay. Opens when a card or the featured movie is clicked, closes on backdrop click or a close button.
@@ -69,7 +72,8 @@ Parent-child: child of App.
 
 SortControl:
 Lets the user choose how the movie list is ordered (e.g. by title A-Z, rating, release date).
-Renders: a dropdown or set of buttons for the available sort options.
+Renders: a dropdown or set of buttons for the available sort options. There should be a "Now Playing" Header that gets rendered.
+
 Props received: current sortMode; onSortChange(mode) callback.
 State: none — sortMode is owned by App, which re-sorts movies[] before passing to MovieList.
 Parent-child: child of App (rendered near/above MovieList).
@@ -195,3 +199,5 @@ There is a disabled state, that based on if disabled or not, displays different 
 10) Adjust styling to give off an Apple Glass Look
 
 11) Use flexbox principles to shift major sections around until I got to the style I wanted to.
+
+12) Changed the Card Css styling so that the necessary information can overlap the card image rather than display text in an ugly way. Imported Google Media icons for prettier UI.

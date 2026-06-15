@@ -5,30 +5,235 @@
     padding: 1rem;
 }
 
-.movie-number {
-    /* technical tag */
-    font-family: var(--font-mono);
-    letter-spacing: 0.1em;
-    opacity: 0.6;
-}
-
 .MovieCard {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.5rem;
     min-width: 0;
-    /* faint white edge for the glass look */
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    border-radius: 12px;
-    padding: 0.75rem;
 }
 
-.MovieCard img,
-.MovieCard .poster-placeholder {
+/* the poster is the canvas everything floats on top of */
+.poster-wrap {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    /* faint white edge for the glass look */
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.poster-wrap:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+
+.poster-wrap img,
+.poster-wrap .poster-placeholder {
     width: 100%;
     height: auto;
     display: block;
-    border-radius: 8px;
     aspect-ratio: 2 / 3;
     object-fit: cover;
+    /* poster brightness eases when watched-state toggles it */
+    transition: filter 0.25s ease;
+}
+
+.poster-placeholder {
+    background: linear-gradient(160deg, #2a2a2e 0%, #161618 100%);
+}
+
+/* ---- hover overlay: darkening gradient (Apple-TV style) ---- */
+.poster-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.1) 45%, rgba(0, 0, 0, 0) 75%);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+}
+
+.poster-wrap:hover .poster-overlay {
+    opacity: 1;
+}
+
+/* number always present, top-left, glass pill like the rating */
+.movie-number {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #fff;
+
+    /* apple glass pill */
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* ---- icon-only circle actions, top-right, revealed on hover ---- */
+.movie-actions {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.poster-wrap:hover .movie-actions {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+
+    /* apple-style glass dome: top-lit gradient fill + blurred backdrop + hairline border */
+    background:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.05) 100%);
+    backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    transition: background 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
+}
+
+.icon-btn:hover {
+    transform: scale(1.08);
+    background:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.1) 100%);
+}
+
+/* icons inherit the button color via fill: currentColor */
+.btn-icon {
+    width: 1.15rem;
+    height: 1.15rem;
+    color: #fff;
+}
+
+/* liked: red heart */
+.icon-btn.liked.active .btn-icon {
+    color: #ff453a;
+}
+
+/* watched: green eye */
+.icon-btn.watched.active .btn-icon {
+    color: #34c759;
+}
+
+/* ---- rating: always visible, bottom-right glass pill ---- */
+.rating-badge {
+    position: absolute;
+    bottom: 0.6rem;
+    right: 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fff;
+
+    /* apple glass pill */
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* ---- title + year on one line below the poster: title left, year right ---- */
+.movie-meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0 0.15rem;
+    min-width: 0;
+}
+
+.movie-title {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+.movie-year {
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+/* ---- favorited: faint red border ---- */
+.MovieCard.is-liked .poster-wrap {
+    border-color: rgba(255, 69, 58, 0.85);
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.45),
+        0 0 0 1px rgba(255, 69, 58, 0.35),
+        0 0 18px rgba(255, 69, 58, 0.3);
+}
+
+/* ---- watched: darken the poster + show a marker ---- */
+.MovieCard.is-watched .poster-wrap img,
+.MovieCard.is-watched .poster-wrap .poster-placeholder {
+    filter: brightness(0.5) saturate(0.85);
+}
+
+.watched-marker {
+    position: absolute;
+    bottom: 0.6rem;
+    left: 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #fff;
+
+    /* apple glass pill, tinted green to read as "done" */
+    background: rgba(52, 199, 89, 0.4);
+    backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgba(120, 255, 150, 0.45);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.watched-marker-icon {
+    width: 0.95rem;
+    height: 0.95rem;
+    color: #fff;
 }

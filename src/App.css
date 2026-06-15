@@ -18,6 +18,8 @@
 .Main {
   display: flex;
   align-items: flex-start;
+  /* breathing room so the right column doesn't touch the Library square */
+  gap: 1.5rem;
 }
 
 .rightMain {
