@@ -130,9 +130,15 @@
     background: #3a3a40;
 }
 
-/* selected route: brighter than the others */
+/* selected route: clearly lighter than the others */
 .library-option.active {
-    background: #4a4a52;
-    border-color: rgba(255, 255, 255, 0.45);
-    color: #fff;
+    background: #e8e8ec;
+    border-color: #ffffff;
+    color: #1a1a1e;
+    font-weight: 700;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.library-option.active:hover {
+    background: #f4f4f6;
 }
