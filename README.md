@@ -24,14 +24,14 @@ Deployed Application (optional): [Flixster Deployed Site](https://flixster-start
   - [x ] Users can use a search bar to search for movies by title.
   - [ x] The search bar should include:
     - [x ] Text input field
-    - [ 🚫] Submit/Search button
-    - [ 🚫] Clear button
-  - [🚫 ] Movies with a title containing the search query in the text input field are displayed in a grid view when the user either:
-    - [🚫 ] Presses the Enter key
-    - [🚫 ] Clicks the Submit/Search button
-  - [🚫 ] Users can click the Clear button. When clicked:
-    - [🚫 ] All text in the text input field is deleted
-    - [🚫] The most recent search results are cleared from the text input field and the grid view and all current movies are displayed in a grid view
+    - [ x] Submit/Search button
+    - [ x] Clear button
+  - [x ] Movies with a title containing the search query in the text input field are displayed in a grid view when the user either:
+    - [x ] Presses the Enter key
+    - [x ] Clicks the Submit/Search button
+  - [x ] Users can click the Clear button. When clicked:
+    - [x ] All text in the text input field is deleted
+    - [x] The most recent search results are cleared from the text input field and the grid view and all current movies are displayed in a grid view
 - [ x] **Design Features**
   - [ x] Website implements all of the following accessibility features:
     - [ x] Semantic HTML
@@ -115,21 +115,21 @@ Deployed Application (optional): [Flixster Deployed Site](https://flixster-start
 
 `TODO://` Paste the **shareable link** to your animated app walkthrough below (replace `ADD_LOOM_LINK_HERE`). GitHub markdown won't render an embedded Loom player, so a plain link is what graders will use. Make sure the link is public and playable before submitting. Ensure your walkthrough showcases the presence and/or functionality of all features you implemented above (check them off as you film!). Pay attention to any **VIDEO WALKTHROUGH SPECIAL INSTRUCTIONS** checkboxes listed above to ensure graders see the full functionality of your website. (🚫 Remove this paragraph after adding your walkthrough link.)
 
-**Walkthrough video:** [Flixster Walkthrough](https://www.loom.com/share/99f8e647e15e428e8426f55d37c4ef75)
+**Walkthrough video:** [Flixster Walkthrough](https://www.loom.com/share/745737d0adb64249920d15f27fc56082)
 
 ### Reflection
 
 * Did the topics discussed in your labs prepare you to complete the assignment? Be specific, which features in your weekly assignment did you feel unprepared to complete?
 
-Add your response here
+for the most part the labs got me ready. fetching from the tmdb api, mapping over the results to render movie cards, and managing state with useState all felt pretty natural after the practice. the parts i felt less prepared for were the ai watch recommendation feature and getting the responsive/mobile layout to actually look good. wiring up the ai call and handling the loading + fallback states took some trial and error since we didnt cover that much in lab. media queries for the sidebar and grid also took me a while to get right.
 
 * If you had more time, what would you have done differently? Would you have added additional features? Changed the way your project responded to a particular event, etc.
   
-Add your response here
+if i had more time i would have cleaned up my state management, probably moving the favorites and watched lists into context instead of passing props all over the place. i'd also persist them to localStorage so they dont reset on refresh. on the feature side i wanted to add pagination/infinite scroll that works alongside search, and maybe a better loading skeleton instead of just a spinner. i'd also spend more time polishing the modal animations.
 
 * Reflect on your project demo, what went well? Were there things that maybe didn't go as planned? Did you notice something that your peer did that you would like to try next time?
 
-Add your response here
+the demo went pretty well overall. the search, sort, modal, and the sidebar pages (all titles / favorites / watched) all worked smoothly and people liked the ui. one thing that didnt go as planned was the ai recommendation occasionally being slow to load during the demo, so i had to talk through the loading state while it caught up. a peer of mine had really nice hover transitions and a polished trailer embed, so next time i want to put more effort into the small animation details and micro-interactions to make it feel more responsive.
 
 ### Open-source libraries used
 
@@ -138,3 +138,6 @@ Add your response here
 ### Shout out
 
 Give a shout out to somebody from your cohort that especially helped you during your project. This can be a fellow peer, instructor, TA, mentor, etc.
+
+Dylan helped me test my web app on mobile and pointed out some visual issues that I needed to fix.
+
