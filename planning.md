@@ -203,3 +203,5 @@ There is a disabled state, that based on if disabled or not, displays different 
 12) Changed the Card Css styling so that the necessary information can overlap the card image rather than display text in an ugly way. Imported Google Media icons for prettier UI.
 
 13) Had Claude help me generate the modal along with AI description generation
+
+14) Revised Search functionality to have a submit button and x button to clear text

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import './SearchBar.css'
 
 const SearchBar = ({onSearch}) => {
@@ -35,10 +35,15 @@ const SearchBar = ({onSearch}) => {
 
             {/* if inputValue is empty react renders nothing; else react renders the x button */}
             {inputValue && (
-                <button type="button" className="search-clear" onClick={handleClear}>
+                <button type="button" className="search-clear" onClick={handleClear} aria-label="Clear search">
                     ✕
                 </button>
             )}
+
+            {/* explicit Submit/Search button — submits the form like pressing Enter */}
+            <button type="submit" className="search-submit">
+                Search
+            </button>
         </form>
     )
 }
