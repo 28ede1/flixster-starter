@@ -98,7 +98,10 @@ Errors: 404 bad movie_id
 
 Null poster/backdrop on any endpoint → use placeholder image.
 
-Note: video quality, HDR, and audio format are NOT in the TMDb API — drop them or use static decorative labels.
+**OpenRouter endpoint**
+
+URL:https://openrouter.ai/api/v1/chat/completions
+model: openrouter/auto
 
 **State Architecture**:
 App owns all the shared state. SearchBar keeps its own typing state. Each line below says: what it is, what it starts as, and what changes it.
