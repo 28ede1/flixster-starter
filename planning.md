@@ -182,3 +182,5 @@ There is a disabled state, that based on if disabled or not, displays different 
 7) Implement search functionality, using similar design pattern to handling fetch requests for "Now Playing"
 
 8) Implement sorting options for liked/unliked and watched/unwatched
+
+9) Add footer section

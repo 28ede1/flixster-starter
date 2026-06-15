@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 
 import './App.css'
 import Header from './Header'
+import Footer from './Footer'
 import MovieList from './MovieList'
 import Library from './Library'
 
@@ -94,7 +95,8 @@ const App = () => {
 
   const handleLoadMore = () => setPage((prev) => prev + 1);
   // both reset page to 1 so a mode switch starts a fresh list (page 1 replaces)
-  const handleSearch = (query) => { setSearchQuery(query); setPage(1); };
+  // a search is a fresh dataset, so drop back to "All" — a stale favorites/watched filter would hide the results
+  const handleSearch = (query) => { setSearchQuery(query); setPage(1); setView("all"); };
   const handleNowPlaying = () => { setSearchQuery(""); setPage(1); };
 
   return (
@@ -125,7 +127,7 @@ const App = () => {
           {isLoading ? "Loading…" : "Load More"}
         </button>
       )}
-
+    <Footer/>
     </div>
   )
 }
