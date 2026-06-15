@@ -38,15 +38,46 @@ const App = () => {
     }
   }
 
+  async function fetchSearch(query, pageToFetch) {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch(
+        `https://api.themoviedb.org/3/search/movie?api_key=${import.meta.env.VITE_TMDB_API_KEY}&query=${encodeURIComponent(query)}&page=${pageToFetch}`
+      );
+
+      if (!res.ok) {
+        throw new Error(`TMDb error ${res.status}`);
+      }
+
+      const data = await res.json();
+      const results = data.results ?? [];
+      setMovieData((prev) => (pageToFetch === 1 ? results : [...prev, ...results]));
+      setTotalPages(data.total_pages ?? 1);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   useEffect(() => {
-    fetchNowPlaying(page);
-  }, [page])
+    if (searchQuery.trim() === "") {
+      fetchNowPlaying(page);
+    } else {
+      fetchSearch(searchQuery, page);
+    }
+  }, [page, searchQuery])
 
   const handleLoadMore = () => setPage((prev) => prev + 1);
+  // both reset page to 1 so a mode switch starts a fresh list (page 1 replaces)
+  const handleSearch = (query) => { setSearchQuery(query); setPage(1); };
+  const handleNowPlaying = () => { setSearchQuery(""); setPage(1); };
 
   return (
     <div className="App">
-      <Header/>
+      <Header onSearch={handleSearch} onNowPlaying={handleNowPlaying} />
       <MovieList movies={movies} />
       {error && <p className="error">{error}</p>}
       {page < totalPages && (
