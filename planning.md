@@ -6,7 +6,7 @@ The main purpose of the App component is to manage all other components of the w
 
 
 Specifically, it should maintain:
-A list of movie objects movies[]
+A list of movie objects movies (its setter is named setMovieData)
 A selected movie id selectedMovieId that is used to identify the movie used for the modal display. When null, no modal is open — so a separate "isModalOpen" boolean is not needed.
 A featured movie featuredMovie (the randomly chosen movie shown at the top). Stored in state so it does not re-randomize on every render. Picked once after the movie list loads.
 A search query searchQuery that is saved when the user hits enter
@@ -26,7 +26,7 @@ Parent-child: child of App, parent of SearchBar.
 SearchBar:
 Handles user search input. Should have a search bar display along with a clear button to clear the search bar. The searchQuery variable should save the result of the input.
 Renders: a text input, a submit/search button, and a clear button.
-Props received: onSearch(query) called when the user hits enter/submit; onClear called when the clear button is pressed.
+Props received: onSearch(query) called when the user hits enter/submit. The clear button reuses the same callback by calling onSearch("") (an empty query sends App back to Now Playing), so no separate onClear prop is needed.
 State: local inputValue for the text currently being typed (controlled input). The committed searchQuery lives in App — only pushed up via onSearch on submit.
 Parent-child: child of Header.
 
@@ -41,15 +41,15 @@ Parent-child: child of App.
 MovieList:
 Displays the list of movie objects.
 Renders: a grid/list of MovieCard components, one per movie.
-Props received: movies[] (already filtered/sorted by App); onCardClick(movieId) to open the modal.
-State: none — purely presentational.
+Props received: movies (already filtered by App); the likes and watched id Sets; onToggleLike and onToggleWatched callbacks. (A future onCardClick(movieId) would be added here to open the modal.)
+State: none — purely presentational. Passes movie (as movie_info) and the 1-based movie_number index down to each MovieCard.
 Parent-child: child of App, parent of MovieCard (one per movie).
 
 MovieCard:
 Displays a card representing a movie. Should contain information about the title, rating, id, and should use the poster image. When hovered, the user should see the title appear as well as options to like/unlike a movie and mark it as watched/unwatched.
 Renders: poster image; on hover, an overlay with the title, rating, and like/unlike + watched/unwatched buttons.
-Props received: the movie object (title, rating, id, poster path); onClick(movieId) to open the modal; like/watched state and toggle callbacks.
-State: none required if like/watched are lifted to App; may hold a local hover flag if not handled in CSS.
+Props received: movie_info (the movie object: title, vote_average, id, poster_path, release_date); movie_number (its 1-based position, rendered as a zero-padded tag); the liked and watched booleans; onToggleLike(id) and onToggleWatched(id) callbacks. (A future onClick(movieId) would open the modal.)
+State: none — liked/watched are lifted to App (tracked there as Sets of ids); hover is handled in CSS.
 Parent-child: child of MovieList.
 
 
@@ -75,7 +75,9 @@ State: none — sortMode is owned by App, which re-sorts movies[] before passing
 Parent-child: child of App (rendered near/above MovieList).
 
 Library: 
-This component should be a small section of the screen that has a button to collapse it. It should have 3 options that allow the user to either 1) view all titles, 2) view favorited, 3) view watched movies. 
+This component should be a small section of the screen that has a button to collapse it. It should have 3 options that allow the user to either 1) view all titles, 2) view favorited, 3) view watched movies.
+Props received: the current view string ("all" | "favorited" | "watched") and an onViewChange(key) callback. App owns view and filters movies into visibleMovies based on it.
+State: a local collapsed boolean for whether the panel is open (App doesn't track this).
 
 **TMDb endpoints**:
 URL, required params, response fields components will use and error cases to handles
@@ -111,7 +113,7 @@ model: openrouter/auto
 **State Architecture**:
 App owns all the shared state. SearchBar keeps its own typing state. Each line below says: what it is, what it starts as, and what changes it.
 
-movies — an array of movie objects. Starts empty []. Updated when the Now Playing or Search fetch comes back.
+movies — an array of movie objects (setter setMovieData). Starts empty []. Updated when the Now Playing or Search fetch comes back.
 searchQuery — a string for the submitted search. Starts as "". Updated when the user submits the search bar, cleared by the clear button.
 page — a number for pagination. Starts at 1. Goes up on "load more", resets to 1 on a new search. Should be controlled by App component
 selectedMovieId — the id of the movie the modal is showing, or null. Starts null. Set when a card is clicked, set back to null when the modal closes.
@@ -120,7 +122,9 @@ featuredMovie — the randomly chosen movie at the top, or null. Starts null. Se
 sortMode — a string for how the list is sorted. Starts "default". Updated when the user changes the sort control.
 isLoading — a boolean. Starts false. True while a fetch is happening, false when it finishes.
 error — an error message string, or null. Starts null. Set when a fetch fails, cleared when the next fetch starts.
-likes / watched — track which movies are liked or marked watched. Start empty. Toggled when the card buttons are clicked.
+likes / watched — Sets of movie ids that are liked or marked watched. Start empty (new Set()). Toggled via handleToggleLike / handleToggleWatched when the card buttons are clicked.
+view — the Library filter string ("all" | "favorited" | "watched"). Starts "all". Updated via onViewChange; App derives visibleMovies from it before passing to MovieList.
+totalPages — the total number of result pages reported by TMDb (setter setTotalPages). Starts 1. Used to hide the "Load More" button once page reaches it.
 
 AI (owned by App, stored per movie id so the same movie isn't fetched twice):
 aiDescriptions — the AI text for each movie. Starts empty {}. Set when an AI description comes back.
@@ -160,7 +164,7 @@ A "page" variable keeps track of what page of results you are asking TMDb for (s
 want page 1 returned). Eventually we want to know when to stop showing the "show more" button (for user sake) so
 we keep track of a totalPages variable as well.
 
-To change the variables, we have a setPage and setTotal page accompanying function. 
+To change the variables, we have a setPage and setTotalPages accompanying function. 
 
 "handleLoadMore" updates the page count (page = page + 1)
 
@@ -169,7 +173,7 @@ the useEffect function has a call to fetchNowPlaying (which originally just got 
 because the fetch request only gets 20 pages at a time, we need a way to still have the older pages there after 
 you make a call to load more pages. 
 
-the "setMovieData" basically says: if the page is 1, replace the entire list, else append the data results 
+the "setMovieData" basically says: if pageToFetch is 1, replace the entire list, else append the data results 
 to the current list of movies ([...prev,...results] does this)
 
 lastly we make sure to save the total number of pages that TMDb has in the variable so that
