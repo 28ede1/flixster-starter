@@ -2,6 +2,10 @@
     display: inline-block;
     margin: 0.75rem 0;
     text-align: left;
+    /* faint white edge for the glass look */
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
 }
 
 .library-toggle {
@@ -20,16 +24,28 @@
 }
 
 .library-option {
-    border: 1px solid #ccc;
+    font-family: var(--font-mono);
     border-radius: 6px;
-    background: #fff;
+    color: rgba(255, 255, 255, 0.7);
     padding: 0.3rem 0.8rem;
     cursor: pointer;
     text-align: left;
+
+    /* apple glass: translucent fill + blurred backdrop + hairline border */
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: background 0.2s ease, border-color 0.2s ease;
 }
 
+.library-option:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* selected: still glassy/transparent, just a bit less than the others */
 .library-option.active {
-    background: #222;
-    color: #fff;
-    border-color: #222;
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.45);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }

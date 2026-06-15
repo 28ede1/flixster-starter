@@ -1,15 +1,24 @@
+:root {
+  /* Rubik = display + body text; Space Mono = technical UI (labels, buttons, nav, tags) */
+  --font-display: 'Rubik', Arial, sans-serif;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+}
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+  font-family: var(--font-display);
+  background-color: #000;
+  color: #fff;
 }
 
 button {
   background-color: #282c34;
   color: white;
   cursor: pointer;
+  font-family: var(--font-mono);
   font-size: 16px;
   font-weight: bold;
+  letter-spacing: 0.03em;
   transition: background-color 0.3s ease;
 }
 

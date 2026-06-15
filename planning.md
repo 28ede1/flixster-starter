@@ -79,6 +79,9 @@ This component should be a small section of the screen that has a button to coll
 Props received: the current view string ("all" | "favorited" | "watched") and an onViewChange(key) callback. App owns view and filters movies into visibleMovies based on it.
 State: a local collapsed boolean for whether the panel is open (App doesn't track this).
 
+Hero Section:
+This section should be above the "Now playing" sort section, the library, and the movie list. It should render a backdrop image for a randomly chosen movie and should in big text display the title of the movie, a description , year, rating, a text (smaller) above the title that glows and says "Now Playing In Theaters", and a button that you click to open the modal (which will be implemented later).
+
 **TMDb endpoints**:
 URL, required params, response fields components will use and error cases to handles
 
@@ -188,3 +191,7 @@ There is a disabled state, that based on if disabled or not, displays different 
 8) Implement sorting options for liked/unliked and watched/unwatched
 
 9) Add footer section
+
+10) Adjust styling to give off an Apple Glass Look
+
+11) Use flexbox principles to shift major sections around until I got to the style I wanted to.

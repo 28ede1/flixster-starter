@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import Header from './Header'
 import Footer from './Footer'
+import Hero from './Hero'
 import MovieList from './MovieList'
 import Library from './Library'
 
@@ -17,6 +18,7 @@ const App = () => {
   const [likes, setLikes] = useState(() => new Set());
   const [watched, setWatched] = useState(() => new Set());
   const [view, setView] = useState("all"); // "all" | "favorited" | "watched"
+  const [heroMovie, setHeroMovie] = useState(null); // random featured movie, locked once chosen
 
   async function fetchNowPlaying(pageToFetch) {
     setIsLoading(true);
@@ -76,6 +78,13 @@ const App = () => {
     }
   }, [page, searchQuery])
 
+  // once movies load, lock in one random movie as the hero (stays put afterwards)
+  useEffect(() => {
+    if (!heroMovie && movies.length > 0) {
+      setHeroMovie(movies[Math.floor(Math.random() * movies.length)]);
+    }
+  }, [movies, heroMovie]);
+
   // toggle an id within a Set-valued state (used by both likes and watched)
   const toggleInSet = (setter) => (id) =>
     setter((prev) => {
@@ -102,31 +111,40 @@ const App = () => {
   return (
     <div className="App">
       <Header onSearch={handleSearch} onNowPlaying={handleNowPlaying} />
-      <Library view={view} onViewChange={setView} />
-      {view === "favorited" && visibleMovies.length === 0 ? (
-        <p className="empty-view">No favorites yet. Tap the heart on any poster to add one</p>
-      ) : view === "watched" && visibleMovies.length === 0 ? (
-        <p className="empty-view">No watched titles yet. Mark something as watched to see it here</p>
-      ) : (
-        <MovieList
-          movies={visibleMovies}
-          likes={likes}
-          watched={watched}
-          onToggleLike={handleToggleLike}
-          onToggleWatched={handleToggleWatched}
-        />
-      )}
-      {error && <p className="error">{error}</p>}
-      
-      {page < totalPages && (
-        <button
-          className="load-more"
-          onClick={handleLoadMore}
-          disabled={isLoading}
-        >
-          {isLoading ? "Loading…" : "Load More"}
-        </button>
-      )}
+      <Hero movie={heroMovie} />
+
+      <main className="Main">
+        <Library className="leftMain" view={view} onViewChange={setView} />
+        
+        <section className="rightMain">
+          {view === "favorited" && visibleMovies.length === 0 ? (
+            <p className="empty-view">No favorites yet. Tap the heart on any poster to add one</p>
+          ) : view === "watched" && visibleMovies.length === 0 ? (
+            <p className="empty-view">No watched titles yet. Mark something as watched to see it here</p>
+          ) : searchQuery.trim() !== "" && visibleMovies.length === 0 && !isLoading ? (
+            <p className="empty-view">No Movies found. Try a different search</p>
+          ) : (
+            <MovieList
+              movies={visibleMovies}
+              likes={likes}
+              watched={watched}
+              onToggleLike={handleToggleLike}
+              onToggleWatched={handleToggleWatched}
+            />
+          )}
+          {error && <p className="error">{error}</p>}
+          
+          {(page < totalPages || isLoading) && (
+            <button
+              className="load-more"
+              onClick={handleLoadMore}
+              disabled={isLoading}
+            >
+              {isLoading ? "• LOADING… •" : "• SHOW MORE •"}
+            </button>
+          )}
+        </section>
+    </main>
     <Footer/>
     </div>
   )

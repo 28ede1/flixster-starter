@@ -19,7 +19,7 @@ const MovieCard = ({movie_info, movie_number, liked, watched, onToggleLike, onTo
         <div className="MovieCard">
             <span className="movie-number">{numberTag}</span>
             <span>{title}</span>
-            <span>{voteAverage}</span>
+            <span>★ {voteAverage}</span>
             <span>{releaseDate}</span>
             {posterUrl ? <img src={posterUrl} alt={`${title} poster`} /> : <div className="poster-placeholder" />}
             <div className="movie-actions">

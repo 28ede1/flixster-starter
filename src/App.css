@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  /* gutter around the whole page so content isn't flush to the screen edges.
+     the header is position:fixed full-width, so its bottom line still spans edge-to-edge */
+  padding: 0 64px 64px;
 }
 
 .App-header {
@@ -11,6 +14,19 @@
   color: white;
   padding: 20px;
 }
+
+.Main {
+  display: flex;
+  align-items: flex-start;
+}
+
+.rightMain {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+
 
 @media (max-width: 600px) {
   .movie-card {
@@ -28,6 +44,41 @@
 }
 
 .load-more {
-  border: solid;
-  border-color: blue;
+  align-self: center;
+  width: fit-content;
+  margin-top: 24px;
+  padding: 9px 26px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+
+  /* apple-style glass dome: top-lit gradient fill + blurred backdrop + hairline border */
+  background:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.04) 55%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  /* outer lift shadow + bright inner top edge + soft inner bottom shade for depth */
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -8px 20px rgba(0, 0, 0, 0.25);
+  transition: background 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
+}
+
+.load-more:hover {
+  transform: translateY(-1px);
+  background:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0.08) 55%, rgba(255, 255, 255, 0.04) 100%);
+  box-shadow:
+    0 14px 38px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    inset 0 -8px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* while loading: stay fully visible (don't fade the glass away), just block clicks */
+.load-more:disabled {
+  cursor: not-allowed;
+  color: rgba(255, 255, 255, 0.6);
+  transform: none;
 }
