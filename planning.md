@@ -58,7 +58,7 @@ you hover over the image. The title and year can be below be displayed below. Th
 
 MovieModal:
 Shows the full details of a single selected movie in an overlay. Opens when a card or the featured movie is clicked, closes on backdrop click or a close button.
-Renders: backdrop image, title, tagline, year, rating, runtime, genres, description, and extra info (video/audio/HDR format, in-theaters status). A close button.
+Renders: backdrop image, title, tagline, year, rating, runtime, genres, description. A close button.
 Props received: the selected movie's details; onClose callback. Conditionally rendered by App only when selectedMovieId is not null.
 State: none of its own (it may trigger App's Movie Details fetch, or App fetches and passes details in).
 Parent-child: child of App.
@@ -201,3 +201,5 @@ There is a disabled state, that based on if disabled or not, displays different 
 11) Use flexbox principles to shift major sections around until I got to the style I wanted to.
 
 12) Changed the Card Css styling so that the necessary information can overlap the card image rather than display text in an ugly way. Imported Google Media icons for prettier UI.
+
+13) Had Claude help me generate the modal along with AI description generation

@@ -1,6 +1,6 @@
 import { FavoriteIcon, VisibilityIcon } from './assets/icons/Icons'
 
-const MovieCard = ({movie_info, movie_number, liked, watched, onToggleLike, onToggleWatched}) => {
+const MovieCard = ({movie_info, movie_number, liked, watched, onToggleLike, onToggleWatched, onCardClick}) => {
     const posterUrl = movie_info.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie_info.poster_path}`
     : null;
@@ -19,7 +19,19 @@ const MovieCard = ({movie_info, movie_number, liked, watched, onToggleLike, onTo
     const numberTag = String(movie_number).padStart(3, "0");
     return (
         <div className={`MovieCard${liked ? " is-liked" : ""}${watched ? " is-watched" : ""}`}>
-            <div className="poster-wrap">
+            <div
+                className="poster-wrap"
+                role="button"
+                tabIndex={0}
+                aria-label={`View details for ${title}`}
+                onClick={() => onCardClick?.(movie_info.id)}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        onCardClick?.(movie_info.id);
+                    }
+                }}
+            >
                 {posterUrl
                     ? <img src={posterUrl} alt={`${title} poster`} />
                     : <div className="poster-placeholder" />}
@@ -44,7 +56,7 @@ const MovieCard = ({movie_info, movie_number, liked, watched, onToggleLike, onTo
                         aria-pressed={liked}
                         aria-label={liked ? "Remove from favorites" : "Add to favorites"}
                         title={liked ? "Remove from favorites" : "Add to favorites"}
-                        onClick={() => onToggleLike(movie_info.id)}
+                        onClick={(e) => { e.stopPropagation(); onToggleLike(movie_info.id); }}
                     >
                         <FavoriteIcon className="btn-icon" />
                     </button>
@@ -53,7 +65,7 @@ const MovieCard = ({movie_info, movie_number, liked, watched, onToggleLike, onTo
                         aria-pressed={watched}
                         aria-label={watched ? "Remove from watched" : "Add to watched"}
                         title={watched ? "Remove from watched" : "Add to watched"}
-                        onClick={() => onToggleWatched(movie_info.id)}
+                        onClick={(e) => { e.stopPropagation(); onToggleWatched(movie_info.id); }}
                     >
                         <VisibilityIcon className="btn-icon" />
                     </button>

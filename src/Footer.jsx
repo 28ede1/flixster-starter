@@ -7,7 +7,7 @@ const Footer = () => {
           <p>
             Source ·{" "}
             <a href="https://www.themoviedb.org/" target="_blank" rel="noreferrer">
-              The Movie Database
+              TMDb Movie Database
             </a>
           </p>
       </div>

@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import './App.css'
 import Header from './Header'
 import Footer from './Footer'
 import Hero from './Hero'
 import MovieList from './MovieList'
-import Library from './Library'
 import SortControl from './SortControl'
+import MovieModal from './MovieModal'
 
 const App = () => {
   const [movies, setMovieData] = useState([]); //we need a way to remember data between renders so we use useState
@@ -18,9 +19,22 @@ const App = () => {
   // likes/watched are sets of movie ids, owned by App so the Library can filter on them
   const [likes, setLikes] = useState(() => new Set());
   const [watched, setWatched] = useState(() => new Set());
-  const [view, setView] = useState("all"); // "all" | "favorited" | "watched"
+  // the active Library filter now lives in the URL instead of state:
+  //   /          -> "all"
+  //   /favorites -> "favorited"
+  //   /watched   -> "watched"
+  const location = useLocation();
+  const navigate = useNavigate();
+  const view =
+    location.pathname === "/favorites" ? "favorited"
+    : location.pathname === "/watched" ? "watched"
+    : "all";
   const [heroMovie, setHeroMovie] = useState(null); // random featured movie, locked once chosen
   const [sortBy, setSortBy] = useState(null); // null | "az" | "newest" | "rating"
+  // null = no modal open; otherwise the full details object for the selected movie
+  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [detailsLoading, setDetailsLoading] = useState(false);
+  const [detailsError, setDetailsError] = useState(null);
 
   async function fetchNowPlaying(pageToFetch) {
     setIsLoading(true);
@@ -72,6 +86,36 @@ const App = () => {
     }
   }
 
+  // fetch full details (runtime, tagline, genres) + trailers for the modal.
+  // append_to_response=videos folds the trailers into the same request.
+  async function openMovie(movieId) {
+    setSelectedMovie({ id: movieId }); // open immediately so the modal can show its loading state
+    setDetailsLoading(true);
+    setDetailsError(null);
+
+    try {
+      const res = await fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}?api_key=${import.meta.env.VITE_TMDB_API_KEY}&append_to_response=videos`
+      );
+
+      if (!res.ok) {
+        throw new Error(`TMDb error ${res.status}`);
+      }
+
+      const data = await res.json();
+      setSelectedMovie(data);
+    } catch (err) {
+      setDetailsError(err.message);
+    } finally {
+      setDetailsLoading(false);
+    }
+  }
+
+  const closeMovie = () => {
+    setSelectedMovie(null);
+    setDetailsError(null);
+  };
+
   useEffect(() => {
     if (searchQuery.trim() === "") {
       fetchNowPlaying(page);
@@ -115,17 +159,15 @@ const App = () => {
   const handleLoadMore = () => setPage((prev) => prev + 1);
   // both reset page to 1 so a mode switch starts a fresh list (page 1 replaces)
   // a search is a fresh dataset, so drop back to "All" — a stale favorites/watched filter would hide the results
-  const handleSearch = (query) => { setSearchQuery(query); setPage(1); setView("all"); };
-  const handleNowPlaying = () => { setSearchQuery(""); setPage(1); };
+  const handleSearch = (query) => { setSearchQuery(query); setPage(1); navigate("/"); };
+  const handleNowPlaying = () => { setSearchQuery(""); setPage(1); navigate("/"); };
 
   return (
     <div className="App">
       <Header onSearch={handleSearch} onNowPlaying={handleNowPlaying} />
-      <Hero movie={heroMovie} />
+      <Hero movie={heroMovie} onOpen={(movie) => openMovie(movie.id)} />
 
       <main className="Main">
-        <Library className="leftMain" view={view} onViewChange={setView} />
-        
         <section className="rightMain">
           <SortControl sortBy={sortBy} onSortChange={setSortBy} />
 
@@ -142,6 +184,7 @@ const App = () => {
               watched={watched}
               onToggleLike={handleToggleLike}
               onToggleWatched={handleToggleWatched}
+              onCardClick={openMovie}
             />
           )}
           {error && <p className="error">{error}</p>}
@@ -158,6 +201,15 @@ const App = () => {
         </section>
     </main>
     <Footer/>
+
+    {selectedMovie && (
+      <MovieModal
+        movie={selectedMovie}
+        isLoading={detailsLoading}
+        error={detailsError}
+        onClose={closeMovie}
+      />
+    )}
     </div>
   )
 }

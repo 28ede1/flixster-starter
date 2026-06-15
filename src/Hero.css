@@ -123,3 +123,21 @@
     0 12px 32px rgba(0, 0, 0, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
+
+/* mobile: keep the hero look, just narrow the gutters and shrink the title
+   so it doesn't overflow on a phone */
+@media (max-width: 768px) {
+  .hero {
+    min-height: 60vh;
+    margin-top: 72px;
+  }
+
+  .hero-content {
+    padding: 0 24px;
+    gap: 10px;
+  }
+
+  .hero-title {
+    font-size: 2.4rem;
+  }
+}

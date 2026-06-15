@@ -1,7 +1,7 @@
 import MovieCard from './MovieCard'
 import './MovieList.css'
 
-const MovieList = ({movies, likes, watched, onToggleLike, onToggleWatched}) => {
+const MovieList = ({movies, likes, watched, onToggleLike, onToggleWatched, onCardClick}) => {
     return (
         <div className="MovieList">
             {movies.map((movie, index) => (
@@ -16,6 +16,7 @@ const MovieList = ({movies, likes, watched, onToggleLike, onToggleWatched}) => {
                     watched={watched.has(movie.id)}
                     onToggleLike={onToggleLike}
                     onToggleWatched={onToggleWatched}
+                    onCardClick={onCardClick}
                 />
             ))}
         </div>

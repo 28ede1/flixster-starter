@@ -76,6 +76,29 @@
         inset 0 -6px 16px rgba(0, 0, 0, 0.25);
 }
 
+@media (max-width: 768px) {
+    /* stack the "Now Playing" label above the sort tabs and let the tabs wrap */
+    .SortControl {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.9rem;
+        margin: 0.5rem 0.5rem 0.75rem;
+        padding: 0.9rem 1rem;
+    }
+
+    .SortTabs {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    .sort-tab-button {
+        flex: 1;
+        text-align: center;
+        padding: 0.55rem 0.6rem;
+    }
+}
+
 /* clicked/selected: highlights white so you know which tab is active */
 .sort-tab-button.active {
     background:

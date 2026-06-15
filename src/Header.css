@@ -29,18 +29,20 @@
     color: rgba(255, 255, 255, 0.7);
 }
 
+/* FX doubles as the home button — bigger glass square, clickable */
 .fx-logo {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 1.5em;
-    height: 1.5em;
+    width: 2.4em;
+    height: 2.4em;
     padding: 0.1em;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    border-radius: 10px;
+    font-size: 1rem;
     font-weight: 700;
     letter-spacing: 0.05em;
     color: #fff;
+    cursor: pointer;
 
     /* apple glass square logo */
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.05) 100%);
@@ -49,16 +51,34 @@
     box-shadow:
         0 4px 14px rgba(0, 0, 0, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    transition: background 0.2s ease, transform 0.15s ease;
 }
 
-.now-playing-btn {
-    background-color: transparent;
-    border: none;
-    font-weight: 300;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.7);
+.fx-logo:hover {
+    transform: translateY(-1px);
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.1) 100%);
 }
 
-.now-playing-btn:hover {
-    background-color: transparent;
+@media (max-width: 768px) {
+    /* keep just the hamburger + FX home button; drop the "Flixter" wordmark
+       to save horizontal space */
+    .Header {
+        padding: 10px 16px;
+        gap: 10px;
+    }
+
+    .brand-name {
+        display: none;
+    }
+
+    /* let the search bar take the remaining width and not overflow */
+    .Header .search-wrap {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .Header .search-input {
+        width: 100%;
+        min-width: 0;
+    }
 }
