@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 
 import './App.css'
+import Header from './Header'
 import MovieList from './MovieList'
 
 const App = () => {
@@ -45,6 +46,7 @@ const App = () => {
 
   return (
     <div className="App">
+      <Header/>
       <MovieList movies={movies} />
       {error && <p className="error">{error}</p>}
       {page < totalPages && (

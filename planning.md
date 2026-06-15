@@ -173,3 +173,5 @@ lastly we make sure to save the total number of pages that TMDb has in the varia
 we can hide the loadmore button if the page count is exceeded.
 
 There is a disabled state, that based on if disabled or not, displays different text and allows/does not allow user to click the button.
+
+6) Implement basic header information (including the SearchBar component)
