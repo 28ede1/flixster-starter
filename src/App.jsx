@@ -40,7 +40,7 @@ const App = () => {
   const [sortBy, setSortBy] = useState(null); // null | "az" | "newest" | "rating"
   // null = no modal open; otherwise the full details object for the selected movie
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const [detailsLoading, setDetailsLoading] = useStowate(false);
+  const [detailsLoading, setDetailsLoading] = useState(false);
   const [detailsError, setDetailsError] = useState(null);
 
   async function fetchNowPlaying(pageToFetch) {
