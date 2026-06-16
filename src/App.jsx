@@ -23,17 +23,24 @@ const App = () => {
   //   /          -> "all"
   //   /favorites -> "favorited"
   //   /watched   -> "watched"
+
+  // returns object describing current URL
   const location = useLocation();
+
+
+  // is a function returned.
   const navigate = useNavigate();
+
   const view =
     location.pathname === "/favorites" ? "favorited"
     : location.pathname === "/watched" ? "watched"
     : "all";
+
   const [heroMovie, setHeroMovie] = useState(null); // random featured movie, locked once chosen
   const [sortBy, setSortBy] = useState(null); // null | "az" | "newest" | "rating"
   // null = no modal open; otherwise the full details object for the selected movie
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const [detailsLoading, setDetailsLoading] = useState(false);
+  const [detailsLoading, setDetailsLoading] = useStowate(false);
   const [detailsError, setDetailsError] = useState(null);
 
   async function fetchNowPlaying(pageToFetch) {
@@ -42,7 +49,7 @@ const App = () => {
 
     try {
       const res = await fetch(
-        `https://api.themoviedb.org/3/movie/now_playing?api_key=${import.meta.env.VITE_TMDB_API_KEY}&page=${pageToFetch}`
+        `https://api.themoviedb.org/3/movie/now_playing?api_key=${import.meta.env.VITE_TMDB_API_KEY}&include_adult=false&page=${pageToFetch}`
       );
 
       if (!res.ok) {
@@ -68,7 +75,7 @@ const App = () => {
 
     try {
       const res = await fetch(
-        `https://api.themoviedb.org/3/search/movie?api_key=${import.meta.env.VITE_TMDB_API_KEY}&query=${encodeURIComponent(query)}&page=${pageToFetch}`
+        `https://api.themoviedb.org/3/search/movie?api_key=${import.meta.env.VITE_TMDB_API_KEY}&query=${encodeURIComponent(query)}&include_adult=false&page=${pageToFetch}`
       );
 
       if (!res.ok) {
